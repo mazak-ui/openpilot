@@ -68,8 +68,8 @@ MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
     current_route->setStyleSheet("padding-left: 40px;");
     current_layout->addWidget(current_route);
     QObject::connect(current_route, &ButtonControl::clicked, [=]() {
-      params.remove("NavDestination");
-      updateCurrentRoute();
+        params.remove("NavDestination");
+        updateCurrentRoute();
     });
 
     current_layout->addSpacing(10);
@@ -139,18 +139,18 @@ MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
       HttpRequest* deleter = new HttpRequest(this);
 
       QObject::connect(repeater, &RequestRepeater::receivedResponse, [=](QString resp) {
-        auto params = Params();
-        if (resp != "null") {
-          if (params.get("NavDestination").empty()) {
-            qWarning() << "Setting NavDestination from /next" << resp;
-            params.put("NavDestination", resp.toStdString());
-          } else {
-            qWarning() << "Got location from /next, but NavDestination already set";
-          }
+          auto params = Params();
+          if (resp != "null") {
+            if (params.get("NavDestination").empty()) {
+              qWarning() << "Setting NavDestination from /next" << resp;
+              params.put("NavDestination", resp.toStdString());
+            } else {
+              qWarning() << "Got location from /next, but NavDestination already set";
+            }
 
-          // Send DELETE to clear destination server side
-          deleter->sendRequest(url, HttpRequest::Method::DELETE);
-        }
+            // Send DELETE to clear destination server side
+            deleter->sendRequest(url, HttpRequest::Method::DELETE);
+          }
       });
     }
   }
@@ -211,16 +211,16 @@ void MapPanel::parseResponse(const QString &response) {
         home_address->setStyleSheet(R"(font-size: 50px; color: white;)");
         home_button->setIcon(QPixmap("../assets/navigation/home.png"));
         QObject::connect(home_button, &QPushButton::clicked, [=]() {
-          navigateTo(obj);
-          emit closeSettings();
+            navigateTo(obj);
+            emit closeSettings();
         });
       } else if (type == "favorite" && label == "work") {
         work_address->setText(name);
         work_address->setStyleSheet(R"(font-size: 50px; color: white;)");
         work_button->setIcon(QPixmap("../assets/navigation/work.png"));
         QObject::connect(work_button, &QPushButton::clicked, [=]() {
-          navigateTo(obj);
-          emit closeSettings();
+            navigateTo(obj);
+            emit closeSettings();
         });
       } else {
         ClickableWidget *widget = new ClickableWidget;
@@ -262,8 +262,8 @@ void MapPanel::parseResponse(const QString &response) {
         )");
 
         QObject::connect(widget, &ClickableWidget::clicked, [=]() {
-          navigateTo(obj);
-          emit closeSettings();
+            navigateTo(obj);
+            emit closeSettings();
         });
 
         recent_layout->addWidget(widget);

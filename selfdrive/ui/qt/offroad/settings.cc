@@ -410,13 +410,16 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"커뮤니티", community_panel(this)},
   };
 
+  //for test
+  auto map_panel = new MapPanel(this);
+  panels.push_back({"Navigation", map_panel});
+
 #ifdef ENABLE_MAPS
-  if (!Params().get("MapboxToken").empty()) {
-    auto map_panel = new MapPanel(this);
-    panels.push_back({"Navigation", map_panel});
-    QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
-  }
+  auto map_panel = new MapPanel(this);
+  panels.push_back({"Navigation", map_panel});
+  QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
 #endif
+
   const int padding = 35;
 
   nav_btns = new QButtonGroup();
