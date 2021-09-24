@@ -5,7 +5,7 @@
 
 static void ui_draw_extras_limit_speed(UIState *s)
 {
-  auto &sm = *(s.sm);
+  auto &sm = (*s->sm);
 
     const UIScene *scene = &s->scene;
     //sm["deviceState"].getDeviceState();
