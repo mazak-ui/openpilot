@@ -188,16 +188,21 @@ class CarInterface(CarInterfaceBase):
 
     return self.CS.out
 
-  def apply(self, c):
+  def apply(self, c, controls):
     hud_v_cruise = c.hudControl.setSpeed
     if hud_v_cruise > 70:
       hud_v_cruise = 0
 
     # For Openpilot, "enabled" includes pre-enable.
-    can_sends = self.CC.update(c.enabled, self.CS, self.frame,
-                               c.actuators,
-                               hud_v_cruise, c.hudControl.lanesVisible,
-                               c.hudControl.leadVisible, c.hudControl.visualAlert)
+    # can_sends = self.CC.update(c.enabled, self.CS, self.frame,
+    #                            c.actuators,
+    #                            hud_v_cruise, c.hudControl.lanesVisible,
+    #                            c.hudControl.leadVisible, c.hudControl.visualAlert)
+
+    can_sends = self.CC.update(c.enabled, self.CS, self.frame, c, c.actuators,
+                               c.cruiseControl.cancel, c.hudControl.visualAlert, c.hudControl.leftLaneVisible,
+                               c.hudControl.rightLaneVisible, c.hudControl.leftLaneDepart, c.hudControl.rightLaneDepart,
+                               c.hudControl.setSpeed, c.hudControl.leadVisible, controls)
 
     self.frame += 1
     return can_sends

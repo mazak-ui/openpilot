@@ -114,6 +114,9 @@ def manager_cleanup():
 
 
 def manager_thread():
+
+  Process(name="road_speed_limiter", target=launcher, args=("selfdrive.road_speed_limiter",)).start()
+
   cloudlog.info("manager start")
   cloudlog.info({"environ": os.environ})
 

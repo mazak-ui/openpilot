@@ -5,11 +5,13 @@
 
 static void ui_draw_extras_limit_speed(UIState *s)
 {
+  auto &sm = *(s.sm);
+
     const UIScene *scene = &s->scene;
-    cereal::CarControl::SccSmoother::Reader scc_smoother = scene->car_control.getSccSmoother(); // TODO jc01rho : scc Ssmoother 체크
-    int activeNDA = scc_smoother.getRoadLimitSpeedActive();
-    int limit_speed = scc_smoother.getRoadLimitSpeed();
-    int left_dist = scc_smoother.getRoadLimitSpeedLeftDist();
+    //sm["deviceState"].getDeviceState();
+    int activeNDA = sm["roadLimitSpeed"].getRoadLimitSpeedActive();
+    int limit_speed = sm["roadLimitSpeed"].getNextLimitSpeed();
+    int left_dist = sm["roadLimitSpeed"].getNextSpeedLeftDist();
 
     if(activeNDA > 0)
     {
