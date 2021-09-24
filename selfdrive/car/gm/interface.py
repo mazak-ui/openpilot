@@ -42,7 +42,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.minSteerSpeed = 10 * CV.KPH_TO_MS
     ret.steerRateCost = 0.3625 # def : 2.0
-    ret.steerActuatorDelay = 0.1925  # def: 0.2 Default delay, not measured yet
+    ret.steerActuatorDelay = 0.1725  # def: 0.2 Default delay, not measured yet
 
     ret.minEnableSpeed = -1
     ret.mass = 1625. + STD_CARGO_KG
@@ -54,13 +54,13 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.init('lqr')
 
     ret.lateralTuning.lqr.scale = 1975.0
-    ret.lateralTuning.lqr.ki = 0.032
+    ret.lateralTuning.lqr.ki = 0.0365
     ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
     ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
     ret.lateralTuning.lqr.c = [1., 0.]
     ret.lateralTuning.lqr.k = [-110., 451.]
     ret.lateralTuning.lqr.l = [0.33, 0.318]
-    ret.lateralTuning.lqr.dcGain = 0.00225
+    ret.lateralTuning.lqr.dcGain = 0.002237852961363602
 
 
 
@@ -74,16 +74,18 @@ class CarInterface(CarInterfaceBase):
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
-    ret.longitudinalTuning.kpBP = [0.0, 35.0]
-    ret.longitudinalTuning.kpV = [0.5, 0.4]
-    ret.longitudinalTuning.kiBP = [0., 35.]
-    ret.longitudinalTuning.kiV = [0.18, 0.2]
+    ret.longitudinalTuning.kpBP = [0., 30.]
+    ret.longitudinalTuning.kpV = [0.5, 0.55]
+    ret.longitudinalTuning.kiBP = [0., 20.]
+    ret.longitudinalTuning.kiV = [0.045, 0.055]
+    ret.longitudinalTuning.kfBP = [15., 20., 25.]
+    ret.longitudinalTuning.kfV = [1., 0.5, 0.2]
 
     if ret.enableGasInterceptor:
       ret.gasMaxBP = [0.0, 5.0, 9.0, 35.0]
       ret.gasMaxV =  [0.4, 0.5, 0.7, 0.7]
 
-    ret.stoppingControl = False
+    # ret.stoppingControl = False
     ret.startAccel = 0.4
 
     ret.steerLimitTimer = 1.5
