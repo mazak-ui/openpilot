@@ -9,7 +9,7 @@ static void ui_draw_extras_limit_speed(UIState *s)
 
     const UIScene *scene = &s->scene;
     //sm["deviceState"].getDeviceState();
-    int activeNDA = sm["roadLimitSpeed"].getRoadLimitSpeedActive();
+    int activeNDA = sm["roadLimitSpeed"].getActive(); 
     int limit_speed = sm["roadLimitSpeed"].getNextLimitSpeed();
     int left_dist = sm["roadLimitSpeed"].getNextSpeedLeftDist();
 
