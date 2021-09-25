@@ -4,16 +4,24 @@ from common.realtime import DT_MDL
 from selfdrive.config import Conversions as CV
 from selfdrive.modeld.constants import T_IDXS
 
+# cruise button by neokii
+ButtonType = car.CarState.ButtonEvent.Type
+ButtonPrev = ButtonType.unknown
+ButtonCnt = 0
+LongPressed = False
 
 # kph
 V_CRUISE_MAX = 135
-V_CRUISE_MIN = 8
-V_CRUISE_DELTA = 8
+V_CRUISE_MIN = 5
+V_CRUISE_DELTA = 5
 V_CRUISE_ENABLE_MIN = 40
+V_CRUISE_DELTA_MI = 5 * CV.MPH_TO_KPH
+V_CRUISE_DELTA_KM = 10
 LAT_MPC_N = 16
 LON_MPC_N = 32
 CONTROL_N = 17
 CAR_ROTATION_RADIUS = 0.0
+REGEN_THRESHOLD = 5
 
 # this corresponds to 80deg/s and 20deg/s steering angle in a toyota corolla
 MAX_CURVATURE_RATES = [0.03762194918267951, 0.003441203371932992]
@@ -40,19 +48,45 @@ def get_steer_max(CP, v_ego):
   return interp(v_ego, CP.steerMaxBP, CP.steerMaxV)
 
 
-def update_v_cruise(v_cruise_kph, buttonEvents, enabled):
+def update_v_cruise(v_cruise_kph, buttonEvents, enabled, metric):
   # handle button presses. TODO: this should be in state_control, but a decelCruise press
   # would have the effect of both enabling and changing speed is checked after the state transition
-  for b in buttonEvents:
-    if enabled and not b.pressed:
-      if b.type == car.CarState.ButtonEvent.Type.accelCruise:
-        v_cruise_kph += V_CRUISE_DELTA - (v_cruise_kph % V_CRUISE_DELTA)
-      elif b.type == car.CarState.ButtonEvent.Type.decelCruise:
-        v_cruise_kph -= V_CRUISE_DELTA - ((V_CRUISE_DELTA - v_cruise_kph) % V_CRUISE_DELTA)
-      v_cruise_kph = clip(v_cruise_kph, V_CRUISE_MIN, V_CRUISE_MAX)
+  global ButtonCnt, LongPressed, ButtonPrev
+  if enabled:
+    if ButtonCnt:
+      ButtonCnt += 1
+    for b in buttonEvents:
+      if b.pressed and not ButtonCnt and (b.type == ButtonType.accelCruise or \
+                                          b.type == ButtonType.decelCruise):
+        ButtonCnt = 1
+        ButtonPrev = b.type
+      elif not b.pressed and ButtonCnt:
+        if not LongPressed and b.type == ButtonType.accelCruise:
+          v_cruise_kph += 1 if metric else 1 * CV.MPH_TO_KPH
+        elif not LongPressed and b.type == ButtonType.decelCruise:
+          v_cruise_kph -= 1 if metric else 1 * CV.MPH_TO_KPH
+        LongPressed = False
+        ButtonCnt = 0
+    if ButtonCnt > 80:
+      LongPressed = True
+      V_CRUISE_DELTA = V_CRUISE_DELTA_KM if metric else V_CRUISE_DELTA_MI
+      if ButtonPrev == ButtonType.accelCruise:
+        v_cruise_kph += V_CRUISE_DELTA - v_cruise_kph % V_CRUISE_DELTA
+      elif ButtonPrev == ButtonType.decelCruise:
+        v_cruise_kph -= V_CRUISE_DELTA - -v_cruise_kph % V_CRUISE_DELTA
+      ButtonCnt %= 80
+    v_cruise_kph = clip(v_cruise_kph, V_CRUISE_MIN, V_CRUISE_MAX)
 
   return v_cruise_kph
 
+def update_v_cruise_regen(v_ego, v_cruise_kph, regen, enabled):
+  if enabled and regen:
+    if (v_cruise_kph - v_ego * CV.MS_TO_KPH) < REGEN_THRESHOLD:
+      v_cruise_kph -= REGEN_THRESHOLD - -v_cruise_kph % 5
+
+  v_cruise_kph = clip(v_cruise_kph, V_CRUISE_MIN, V_CRUISE_MAX)
+
+  return v_cruise_kph
 
 def initialize_v_cruise(v_ego, buttonEvents, v_cruise_last):
   for b in buttonEvents:
@@ -83,9 +117,9 @@ def get_lag_adjusted_curvature(CP, v_ego, psis, curvatures, curvature_rates):
 
   max_curvature_rate = interp(v_ego, MAX_CURVATURE_RATE_SPEEDS, MAX_CURVATURE_RATES)
   safe_desired_curvature_rate = clip(desired_curvature_rate,
-                                          -max_curvature_rate,
-                                          max_curvature_rate)
+                                     -max_curvature_rate,
+                                     max_curvature_rate)
   safe_desired_curvature = clip(desired_curvature,
-                                     current_curvature - max_curvature_rate/DT_MDL,
-                                     current_curvature + max_curvature_rate/DT_MDL)
+                                current_curvature - max_curvature_rate/DT_MDL,
+                                current_curvature + max_curvature_rate/DT_MDL)
   return safe_desired_curvature, safe_desired_curvature_rate
