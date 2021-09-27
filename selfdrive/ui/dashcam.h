@@ -3,6 +3,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+
+
 #define CAPTURE_STATE_NONE 0
 #define CAPTURE_STATE_CAPTURING 1
 #define CAPTURE_STATE_NOT_CAPTURING 2
@@ -258,46 +260,48 @@ void draw_lock_button(UIState *s) {
 
 static void screen_draw_button(UIState *s, int touch_x, int touch_y) {
   // Set button to bottom left of screen
-  if (s->vipc_client->connected){
-
-    if (captureState == CAPTURE_STATE_CAPTURING) {
-      draw_lock_button(s);
-    }
+  if (s->scene.world_objects_visible){
+    //  if (captureState == CAPTURE_STATE_CAPTURING) {
+//    draw_lock_button(s);
+//  }
 
     int btn_w = 150;
     int btn_h = 150;
     int btn_x = 1920 - btn_w - 110;
     int btn_y = 1080 - btn_h - 45;
     nvgBeginPath(s->vg);
-      nvgRoundedRect(s->vg, btn_x, btn_y, btn_w, btn_h, 100);
-      nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));
-      nvgStrokeWidth(s->vg, 6);
-      nvgStroke(s->vg);
+    nvgRoundedRect(s->vg, btn_x, btn_y, btn_w, btn_h, 100);
+    nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));
+    nvgStrokeWidth(s->vg, 6);
+    nvgStroke(s->vg);
 
-      nvgFontSize(s->vg, 70);
+    nvgFontSize(s->vg, 70);
 
-      if (captureState == CAPTURE_STATE_CAPTURING) {
-        NVGcolor fillColor = nvgRGBA(255,0,0,150);
-        nvgFillColor(s->vg, fillColor);
-        nvgFill(s->vg);
-        nvgFillColor(s->vg, nvgRGBA(255,255,255,200));
+    if (captureState == CAPTURE_STATE_CAPTURING) {
+      NVGcolor fillColor = nvgRGBA(255,0,0,150);
+      nvgFillColor(s->vg, fillColor);
+      nvgFill(s->vg);
+      nvgFillColor(s->vg, nvgRGBA(255,255,255,200));
+    }
+    else {
+      nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
+    }
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    nvgText(s->vg, btn_x+btn_w/2, btn_y+btn_h/2, "REC", NULL);
+
+
+    if (captureState == CAPTURE_STATE_CAPTURING) {
+      //draw_date_time(s);
+
+      elapsed_time = get_time() - start_time;
+
+      if (elapsed_time >= RECORD_INTERVAL) {
+        rotate_video();
       }
-      else {
-        nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
-      }
-      nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-      nvgText(s->vg, btn_x+btn_w/2, btn_y+btn_h/2, "REC", NULL);
-  }
-
-  if (captureState == CAPTURE_STATE_CAPTURING) {
-    //draw_date_time(s);
-
-    elapsed_time = get_time() - start_time;
-
-    if (elapsed_time >= RECORD_INTERVAL) {
-      rotate_video();
     }
   }
+
+
 }
 
 void screen_toggle_record_state() {
@@ -336,19 +340,27 @@ bool dashcam( UIState *s, int touch_x, int touch_y ) {
     }
   }
 
-  if (screen_lock_button_clicked(touch_x,touch_y,lock_button)) {
-    screen_toggle_lock();
-    touched = true;
-  }
-  if (!s->vipc_client->connected) {
+//  if (screen_lock_button_clicked(touch_x,touch_y,lock_button)) {
+//    screen_toggle_lock();
+//    touched = true;
+//  }
+//  if (!s->vipc_client->connected) {
+//    // Assume car is not in drive so stop recording
+//    stop_capture();
+//  }
+//
+//  if (s->scene.car_state.getVEgo() < 1.5 && !s->scene.controls_state.getEnabled()) {
+//    stop_capture();
+//  }
+  if (!s->scene.world_objects_visible) {
     // Assume car is not in drive so stop recording
     stop_capture();
   }
 
-  if (s->scene.car_state.getVEgo() < 1.5 && !s->scene.controls_state.getEnabled()) {
+  if ((*s->sm)["carState"].getCarState().getVEgo() < 1.5 && !(*s->sm)["controlsState"].getControlsState().getEnabled()) {
     stop_capture();
   }
   //s->scene.recording = (captureState != CAPTURE_STATE_NOT_CAPTURING);
-  
+
   return touched;
 }

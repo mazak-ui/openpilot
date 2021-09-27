@@ -8,9 +8,9 @@ static void ui_draw_extras_limit_speed(UIState *s)
   auto &sm = (*s->sm);
 
   const UIScene *scene = &s->scene;
-  int activeNDA = sm["roadLimitSpeed"].getActive();
-  int limit_speed = sm["roadLimitSpeed"].getNextLimitSpeed();
-  int left_dist = sm["roadLimitSpeed"].getNextSpeedLeftDist();
+  int activeNDA = sm["roadLimitSpeed"].getRoadLimitSpeed().getActive();
+  int limit_speed = sm["roadLimitSpeed"].getRoadLimitSpeed().getNextLimitSpeed();
+  int left_dist = sm["roadLimitSpeed"].getRoadLimitSpeed().getNextSpeedLeftDist();
 
 
     if(activeNDA > 0)
@@ -63,10 +63,10 @@ static void ui_draw_extras_limit_speed(UIState *s)
     else
     {
         auto controls_state = (*s->sm)["controlsState"].getControlsState();
-        int sccStockCamAct = (int)controls_state.getSccStockCamAct();
-        int sccStockCamStatus = (int)controls_state.getSccStockCamStatus();
+//        int sccStockCamAct = (int)controls_state.getSccStockCamAct();
+//        int sccStockCamStatus = (int)controls_state.getSccStockCamStatus();
 
-        if(sccStockCamAct == 2 && sccStockCamStatus == 2)
+//        if(sccStockCamAct == 2 && sccStockCamStatus == 2)
         {
             int w = 200;
             int h = 200;
