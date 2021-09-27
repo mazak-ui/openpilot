@@ -7,7 +7,7 @@ static void ui_draw_extras_limit_speed(UIState *s)
 {
   auto &sm = (*s->sm);
 
-  const UIScene *scene = &s->scene;
+//  const UIScene *scene = &s->scene;
   int activeNDA = sm["roadLimitSpeed"].getRoadLimitSpeed().getActive();
   int limit_speed = sm["roadLimitSpeed"].getRoadLimitSpeed().getNextLimitSpeed();
   int left_dist = sm["roadLimitSpeed"].getRoadLimitSpeed().getNextSpeedLeftDist();
@@ -62,7 +62,7 @@ static void ui_draw_extras_limit_speed(UIState *s)
     }
     else
     {
-        auto controls_state = (*s->sm)["controlsState"].getControlsState();
+//        auto controls_state = (*s->sm)["controlsState"].getControlsState();
 //        int sccStockCamAct = (int)controls_state.getSccStockCamAct();
 //        int sccStockCamStatus = (int)controls_state.getSccStockCamStatus();
 
@@ -72,7 +72,7 @@ static void ui_draw_extras_limit_speed(UIState *s)
             int h = 200;
             int x = (bdr_s*2) + 300;
             int y = 80;
-            char str[32];
+//            char str[32];
 
             nvgBeginPath(s->vg);
             nvgRoundedRect(s->vg, x, y, w, h, 210);
