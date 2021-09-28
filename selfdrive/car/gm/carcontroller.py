@@ -15,13 +15,11 @@ MIN_PEDAL = [0.02, 0.05, 0.1]
 
 def accel_hysteresis(accel, accel_steady):
 
-  # for small accel oscillations within ACCEL_HYST_GAP, don't change the accel command
-  if accel == 0:
-    accel_steady = 0.
-  elif accel > accel_steady + ACCEL_HYST_GAP:
-    accel_steady = accel - ACCEL_HYST_GAP
-  elif accel < accel_steady - ACCEL_HYST_GAP:
-    accel_steady = accel + ACCEL_HYST_GAP
+  # for small accel oscillations less than 0.02, don't change the accel command
+  if accel > accel_steady + 0.02:
+    accel_steady = accel - 0.02
+  elif accel < accel_steady - 0.02:
+    accel_steady = accel + 0.02
   accel = accel_steady
 
   return accel, accel_steady
@@ -33,7 +31,7 @@ class CarController():
     self.lka_icon_status_last = (False, False)
     self.steer_rate_limited = False
     self.accel_steady = 0.
-    self.apply_pedal_last = 0.
+    #self.apply_pedal_last = 0.
 
     self.params = CarControllerParams()
 
@@ -54,7 +52,7 @@ class CarController():
     can_sends = []
 
     # STEER
-    lkas_enabled = enabled and not CS.out.steerWarning and CS.out.vEgo > P.MIN_STEER_SPEED and CS.enable_lkas
+    lkas_enabled = enabled and not (CS.out.steerWarning or CS.out.steerError) and CS.out.vEgo > P.MIN_STEER_SPEED
     if (frame % P.STEER_STEP) == 0:
       if lkas_enabled:
         new_steer = int(round(actuators.steer * P.STEER_MAX))
@@ -84,6 +82,7 @@ class CarController():
 
       idx = (frame // 2) % 4
       can_sends.append(create_gas_command(self.packer_pt, final_pedal, idx))
+      #self.apply_pedal_last = final_pedal
 
     # Send dashboard UI commands (ACC status), 25hz
     #if (frame % 4) == 0:
