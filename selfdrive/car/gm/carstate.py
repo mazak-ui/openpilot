@@ -105,6 +105,7 @@ class CarState(CarStateBase):
       ("FRWheelSpd", "EBCMWheelSpdFront", 0),
       ("RLWheelSpd", "EBCMWheelSpdRear", 0),
       ("RRWheelSpd", "EBCMWheelSpdRear", 0),
+      ("VehicleSpeed", "ECMVehicleSpeed", 0),
       ("PRNDL", "ECMPRDNL", 0),
       ("LKADriverAppldTrq", "PSCMStatus", 0),
       ("LKATorqueDelivered", "PSCMStatus", 0),
