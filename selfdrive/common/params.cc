@@ -210,6 +210,13 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"AutoLaneChangeEnabled", PERSISTENT},
     {"PrebuiltEnabled", PERSISTENT},
     {"NDAEnabled", PERSISTENT},
+    {"SccSmootherState", PERSISTENT},
+    {"SccSmootherSlowOnCurves", PERSISTENT},
+    {"SccSmootherSyncGasPressed", PERSISTENT},
+//    {"StockNaviDecelEnabled", PERSISTENT},
+    {"ShowDebugUI", PERSISTENT},
+    {"CustomLeadMark", PERSISTENT},
+
 
 };
 

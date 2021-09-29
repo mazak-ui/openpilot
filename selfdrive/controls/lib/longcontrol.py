@@ -66,16 +66,19 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target, v_
 
 
 class LongControl():
-  def __init__(self, CP):
+  def __init__(self, CP, compute_gb):
     self.long_control_state = LongCtrlState.off  # initialized to off
     self.pid = LongPIController((CP.longitudinalTuning.kpBP, CP.longitudinalTuning.kpV),
                                 (CP.longitudinalTuning.kiBP, CP.longitudinalTuning.kiV),
-                                rate=1/DT_CTRL,
-                                sat_limit=0.8)
+                                (CP.longitudinalTuning.kfBP, CP.longitudinalTuning.kfV),
+                                rate=RATE,
+                                sat_limit=0.8,
+                                convert=compute_gb)
     self.pid.pos_limit = ACCEL_MAX
     self.pid.neg_limit = ACCEL_MIN
     self.v_pid = 0.0
     self.last_output_accel = 0.0
+    self.last_output_gb = 0.0
 
   def reset(self, v_pid):
     """Reset PID controller and change setpoint"""

@@ -101,7 +101,7 @@ class CarController():
     # Conveniently, sending camera message periodically also works as a keepalive.
 
     #NDAManager
-
+    self.scc_smoother.update(enabled, can_sends, self.packer, CC, CS, frame, apply_accel, controls)
 
 
     lka_active = lkas_enabled == 1

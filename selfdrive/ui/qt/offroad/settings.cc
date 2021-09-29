@@ -368,11 +368,36 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
                                             "../assets/offroad/icon_road.png",
                                             this));
 
+  toggles.append(new ParamControl("SccSmootherSlowOnCurves",
+                                            "Enable Slow On Curves",
+                                            "",
+                                            "../assets/offroad/icon_road.png",
+                                            this));
 
-//  toggles_list->addWidget(horizontal_line());
-//  toggles_list->addWidget(new LQRSelection());
-//  toggles_list->addWidget(horizontal_line());
-//  toggles_list->addWidget(new INDISelection());
+  toggles.append(new ParamControl("SccSmootherSyncGasPressed",
+                                            "Sync set speed on gas pressed",
+                                            "",
+                                            "../assets/offroad/icon_road.png",
+                                            this));
+
+//  toggles.append(new ParamControl("StockNaviDecelEnabled",
+//                                            "Stock Navi based deceleration",
+//                                            "Use the stock navi based deceleration for longcontrol",
+//                                            "../assets/offroad/icon_road.png",
+//                                            this));
+
+  toggles.append(new ParamControl("ShowDebugUI",
+                                            "Show Debug UI",
+                                            "",
+                                            "../assets/offroad/icon_shell.png",
+                                            this));
+
+  toggles.append(new ParamControl("CustomLeadMark",
+                                            "Use custom lead mark",
+                                            "",
+                                            "../assets/offroad/icon_road.png",
+                                            this));
+
 
   for(ParamControl *toggle : toggles) {
     if(main_layout->count() != 0) {

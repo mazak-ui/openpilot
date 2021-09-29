@@ -78,6 +78,8 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kpV = [1.2, 1.05, 0.92, 0.765, 0.61, 0.5, 0.4]
     ret.longitudinalTuning.kiBP = [0, 130. * CV.KPH_TO_MS]
     ret.longitudinalTuning.kiV = [0.03, 0.02]
+    ret.longitudinalTuning.kfBP = [15., 20., 25.]
+    ret.longitudinalTuning.kfV = [1., 0.5, 0.2]
     ret.longitudinalTuning.deadzoneBP = [0., 100.*CV.KPH_TO_MS]
     ret.longitudinalTuning.deadzoneV = [0., 0.015]
     #ret.longitudinalActuatorDelay = 0.15
@@ -162,7 +164,7 @@ class CarInterface(CarInterfaceBase):
 
 
     #Added by jc01rho inspired by JangPoo
-    if ret.cruiseState.enabled and ret.gearShifter == GearShifter.drive and ret.vEgo > 2 and not ret.brakePressed and not self.CS.standstil :
+    if ret.gearShifter == GearShifter.drive and ret.vEgo > 2 and not ret.brakePressed and not self.CS.standstil :
       if ret.cruiseState.available and not ret.seatbeltUnlatched and not ret.espDisabled and self.flag_pcmEnable_able :
 
         if self.flag_pcmEnable_initialSet == False :
