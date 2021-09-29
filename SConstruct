@@ -10,9 +10,10 @@ TICI = os.path.isfile('/TICI')
 Decider('MD5-timestamp')
 SetOption('num_jobs', 4)
 
+cache_dir = '/data/scons_cache'
 CacheDir(cache_dir)
 Clean(["."], cache_dir)
-CacheDir('/data/scons_cache')
+
 
 
 AddOption('--test',
