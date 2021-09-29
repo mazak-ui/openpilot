@@ -10,7 +10,7 @@ TICI = os.path.isfile('/TICI')
 Decider('MD5-timestamp')
 SetOption('num_jobs', 4)
 CacheDir('/data/build_cache')
-
+Clean(["."], cache_dir)
 
 AddOption('--test',
           action='store_true',
@@ -240,9 +240,9 @@ if GetOption('compile_db'):
   env.CompilationDatabase('compile_commands.json')
 
 # Setup cache dir
-cache_dir = '/data/scons_cache' if TICI else '/tmp/scons_cache'
-CacheDir(cache_dir)
-Clean(["."], cache_dir)
+#cache_dir = '/data/scons_cache' if TICI else '/tmp/scons_cache'
+#CacheDir(cache_dir)
+
 
 node_interval = 5
 node_count = 0
