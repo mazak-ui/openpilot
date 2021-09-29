@@ -768,46 +768,46 @@ static void bb_ui_draw_UI(UIState *s)
 }
 
 static void ui_draw_vision_scc_gap(UIState *s) { // TODO jc01rho : 체크 필요
-//  const UIScene *scene = &s->scene;
-//  auto car_state = (*s->sm)["carState"].getCarState();
-//  auto scc_smoother = s->scene.car_control.getSccSmoother();
-//
-//  int gap = car_state.getCruiseGap();
-//  bool longControl = scc_smoother.getLongControl();
-//  int autoTrGap = scc_smoother.getAutoTrGap();
-//
-//  const int radius = 96;
-//  const int center_x = radius + (bdr_s * 2);
-//  const int center_y = s->fb_h - footer_h / 2;
-//
-//  NVGcolor color_bg = nvgRGBA(0, 0, 0, (255 * 0.1f));
-//
-//  nvgBeginPath(s->vg);
-//  nvgCircle(s->vg, center_x, center_y, radius);
-//  nvgFillColor(s->vg, color_bg);
-//  nvgFill(s->vg);
-//
-//  NVGcolor textColor = nvgRGBA(255, 255, 255, 200);
-//  float textSize = 30.f;
-//
-//  char str[64];
-//  if(gap <= 0) {
-//    snprintf(str, sizeof(str), "N/A");
-//  }
-//  else if(longControl && gap == autoTrGap) {
-//    snprintf(str, sizeof(str), "AUTO");
-//    textColor = nvgRGBA(120, 255, 120, 200);
-//  }
-//  else {
-//    snprintf(str, sizeof(str), "%d", (int)gap);
-//    textColor = nvgRGBA(120, 255, 120, 200);
-//    textSize = 38.f;
-//  }
-//
-//  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-//
-//  ui_draw_text(s, center_x, center_y-36, "GAP", 22 * 2.5f, nvgRGBA(255, 255, 255, 200), "sans-bold");
-//  ui_draw_text(s, center_x, center_y+22, str, textSize * 2.5f, textColor, "sans-bold");
+  const UIScene *scene = &s->scene;
+  auto car_state = (*s->sm)["carState"].getCarState();
+  auto scc_smoother = s->scene.car_control.getSccSmoother();
+
+  int gap = car_state.getCruiseGap();
+  bool longControl = scc_smoother.getLongControl();
+  int autoTrGap = scc_smoother.getAutoTrGap();
+
+  const int radius = 96;
+  const int center_x = radius + (bdr_s * 2);
+  const int center_y = s->fb_h - footer_h / 2;
+
+  NVGcolor color_bg = nvgRGBA(0, 0, 0, (255 * 0.1f));
+
+  nvgBeginPath(s->vg);
+  nvgCircle(s->vg, center_x, center_y, radius);
+  nvgFillColor(s->vg, color_bg);
+  nvgFill(s->vg);
+
+  NVGcolor textColor = nvgRGBA(255, 255, 255, 200);
+  float textSize = 30.f;
+
+  char str[64];
+  if(gap <= 0) {
+    snprintf(str, sizeof(str), "N/A");
+  }
+  else if(longControl && gap == autoTrGap) {
+    snprintf(str, sizeof(str), "AUTO");
+    textColor = nvgRGBA(120, 255, 120, 200);
+  }
+  else {
+    snprintf(str, sizeof(str), "%d", (int)gap);
+    textColor = nvgRGBA(120, 255, 120, 200);
+    textSize = 38.f;
+  }
+
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+
+  ui_draw_text(s, center_x, center_y-36, "GAP", 22 * 2.5f, nvgRGBA(255, 255, 255, 200), "sans-bold");
+  ui_draw_text(s, center_x, center_y+22, str, textSize * 2.5f, textColor, "sans-bold");
 
 }
 // TODO jc01rho : 체크 필요
