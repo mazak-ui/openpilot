@@ -25,6 +25,13 @@
 #include "selfdrive/ui/qt/util.h"
 #include "selfdrive/ui/qt/qt_window.h"
 
+
+#include <QComboBox>
+#include <QAbstractItemView>
+#include <QScroller>
+#include <QListView>
+#include <QListWidget>
+
 TogglesPanel::TogglesPanel(QWidget *parent) : ListWidget(parent) {
 
   addItem(new ParamControl("OpenpilotEnabledToggle",
@@ -306,31 +313,73 @@ void SettingsWindow::showEvent(QShowEvent *event) {
 }
 
 
-QWidget * community_panel(QWidget * parent) {
-  QWidget *w = new QWidget(parent);
-  QVBoxLayout *toggles_list = new QVBoxLayout(w);
-  toggles_list->setSpacing(30);
+CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
+  main_layout = new QStackedLayout(this);
 
-  toggles_list->addWidget(new ParamControl("AutoLaneChangeEnabled",
+  QWidget* homeScreen = new QWidget(this);
+
+
+  QVBoxLayout* vlayout = new QVBoxLayout(homeScreen);
+  vlayout->setContentsMargins(0, 20, 0, 20);
+
+  homeWidget = new QWidget(this);
+  QVBoxLayout* toggleLayout = new QVBoxLayout(homeWidget);
+  homeWidget->setObjectName("homeWidget");
+
+  ScrollView *scroller = new ScrollView(homeWidget, this);
+  scroller->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  vlayout->addWidget(scroller, 1);
+
+  main_layout->addWidget(homeScreen);
+  QPalette pal = palette();
+  pal.setColor(QPalette::Background, QColor(0x29, 0x29, 0x29));
+  setAutoFillBackground(true);
+  setPalette(pal);
+
+  setStyleSheet(R"(
+    #back_btn, #selectCarBtn {
+      font-size: 50px;
+      margin: 0px;
+      padding: 20px;
+      border-width: 0;
+      border-radius: 30px;
+      color: #dddddd;
+      background-color: #444444;
+    }
+  )");
+
+  QList<ParamControl*> toggles;
+
+
+  toggles.append(new ParamControl("AutoLaneChangeEnabled",
                                             "자동 차선변경 사용",
                                             "자동 차선 변경. 사용에 주의 하십시오",
                                             "../assets/offroad/icon_road.png"
                                               ));
-  toggles_list->addWidget(horizontal_line());
-  toggles_list->addWidget(new PrebuiltParamControl("PrebuiltEnabled",
+
+  toggles.append(new PrebuiltParamControl("PrebuiltEnabled",
                                             "Enable Prebuilt File",
                                             "완전 정상주행 2회 이후 활성화하세요. prebuilt 파일이 있는경우 새로 빌드하지 않습니다. 업데이트창이 뜰때 내용을 확인하세요.",
                                             "../assets/offroad/icon_checkmark.png"
                                             ));
+  toggles.append(new ParamControl("NDAEnabled",
+                                            "NDA를 활성화 합니다.",
+                                            "warnings: it is beta, be careful!! Openpilot will control the speed of your car",
+                                            "../assets/offroad/icon_road.png",
+                                            this));
+
 
 //  toggles_list->addWidget(horizontal_line());
 //  toggles_list->addWidget(new LQRSelection());
 //  toggles_list->addWidget(horizontal_line());
 //  toggles_list->addWidget(new INDISelection());
 
-  QWidget *widget = new QWidget;
-  widget->setLayout(toggles_list);
-  return widget;
+  for(ParamControl *toggle : toggles) {
+    if(main_layout->count() != 0) {
+      toggleLayout->addWidget(horizontal_line());
+    }
+    toggleLayout->addWidget(toggle);
+  }
 }
 
 
@@ -378,7 +427,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"네트워크", network_panel(this)},
     {"토글메뉴", new TogglesPanel(this)},
     {"개발자", new SoftwarePanel(this)},
-    {"커뮤니티", community_panel(this)},
+    {"커뮤니티", new CommunityPanel(this)},
   };
 
 #ifdef ENABLE_MAPS

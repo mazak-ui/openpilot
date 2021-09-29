@@ -62,6 +62,7 @@ services = {
   "managerState": (True, 2., 1),
   "uploaderState": (True, 0., 1),
 
+  "roadLimitSpeed": (False, 20., 5),
   # debug
   "testJoystick": (False, 0.),
 }

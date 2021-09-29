@@ -74,12 +74,13 @@ class CarInterface(CarInterfaceBase):
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
-    ret.longitudinalTuning.kpBP = [0., 30.]
-    ret.longitudinalTuning.kpV = [0.5, 0.55]
-    ret.longitudinalTuning.kiBP = [0., 20.]
-    ret.longitudinalTuning.kiV = [0.045, 0.055]
-    ret.longitudinalTuning.kfBP = [15., 20., 25.]
-    ret.longitudinalTuning.kfV = [1., 0.5, 0.2]
+    ret.longitudinalTuning.kpBP = [0, 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 40.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 100.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
+    ret.longitudinalTuning.kpV = [1.2, 1.05, 0.92, 0.765, 0.61, 0.5, 0.4]
+    ret.longitudinalTuning.kiBP = [0, 130. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kiV = [0.03, 0.02]
+    ret.longitudinalTuning.deadzoneBP = [0., 100.*CV.KPH_TO_MS]
+    ret.longitudinalTuning.deadzoneV = [0., 0.015]
+    #ret.longitudinalActuatorDelay = 0.15
 
     if ret.enableGasInterceptor:
       ret.gasMaxBP = [0.0, 5.0, 9.0, 35.0]
@@ -143,14 +144,14 @@ class CarInterface(CarInterfaceBase):
     # handle button presses
     if not self.CS.main_on and self.CP.enableGasInterceptor:
       for b in ret.buttonEvents:
-        # if (b.type == ButtonType.decelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
-        #   self.CS.adaptive_Cruise = True
-        #   self.CS.enable_lkas = True
-        #   events.add(EventName.buttonEnable)
-        # if (b.type == ButtonType.accelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
-        #   self.CS.adaptive_Cruise = False
-        #   self.CS.enable_lkas = False
-        #   events.add(EventName.buttonEnable)
+        if (b.type == ButtonType.decelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
+          self.CS.adaptive_Cruise = True
+          self.CS.enable_lkas = True
+          events.add(EventName.buttonEnable)
+        if (b.type == ButtonType.accelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
+          self.CS.adaptive_Cruise = True
+          self.CS.enable_lkas = False
+          events.add(EventName.buttonEnable)
         if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
           self.CS.adaptive_Cruise = False
           self.CS.enable_lkas = True
@@ -161,7 +162,7 @@ class CarInterface(CarInterfaceBase):
 
 
     #Added by jc01rho inspired by JangPoo
-    if self.CS.main_on  and ret.cruiseState.enabled and ret.gearShifter == GearShifter.drive and ret.vEgo > 2 and not ret.brakePressed :
+    if ret.cruiseState.enabled and ret.gearShifter == GearShifter.drive and ret.vEgo > 2 and not ret.brakePressed and not self.CS.standstil :
       if ret.cruiseState.available and not ret.seatbeltUnlatched and not ret.espDisabled and self.flag_pcmEnable_able :
 
         if self.flag_pcmEnable_initialSet == False :
@@ -172,8 +173,11 @@ class CarInterface(CarInterfaceBase):
             self.flag_pcmEnable_able = False
             self.initial_pcmEnable_counter = 0
         else :
-          events.add(EventName.pcmEnable)
-          self.flag_pcmEnable_able = False
+          self.initial_pcmEnable_counter = self.initial_pcmEnable_counter + 1
+          if self.initial_pcmEnable_counter > 50 :
+            self.initial_pcmEnable_counter = 0
+            events.add(EventName.pcmEnable)
+            self.flag_pcmEnable_able = False
           # self.flag_pcmEnable_initialSet = True
           # self.initial_pcmEnable_counter = 0
     else  :

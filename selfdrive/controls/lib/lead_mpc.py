@@ -9,6 +9,8 @@ from selfdrive.controls.lib.drive_helpers import MPC_COST_LONG, CONTROL_N
 from selfdrive.swaglog import cloudlog
 
 MPC_T = list(np.arange(0,1.,.2)) + list(np.arange(1.,10.6,.6))
+AUTO_TR_BP = [10.*CV.KPH_TO_MS, 50.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS,90.*CV.KPH_TO_MS]
+AUTO_TR_V = [1.4, 1.6, 1.8,2.0]
 
 
 class LeadMpc():
@@ -56,7 +58,7 @@ class LeadMpc():
 
     # Setup current mpc state
     self.cur_state[0].x_ego = 0.0
-
+    TR = interp(v_ego, AUTO_TR_BP, AUTO_TR_V)
     if lead is not None and lead.status:
       x_lead = lead.dRel
       v_lead = max(0.0, lead.vLead)
@@ -86,7 +88,7 @@ class LeadMpc():
 
     # Calculate mpc
     t = sec_since_boot()
-    self.n_its = self.libmpc.run_mpc(self.cur_state, self.mpc_solution, self.a_lead_tau, a_lead)
+    self.n_its = self.libmpc.run_mpc(self.cur_state, self.mpc_solution, self.a_lead_tau, a_lead, TR)
     self.v_solution = interp(T_IDXS[:CONTROL_N], MPC_T, self.mpc_solution.v_ego)
     self.a_solution = interp(T_IDXS[:CONTROL_N], MPC_T, self.mpc_solution.a_ego)
     self.j_solution = interp(T_IDXS[:CONTROL_N], MPC_T[:-1], self.mpc_solution.j_ego)

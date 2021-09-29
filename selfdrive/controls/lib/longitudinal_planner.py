@@ -78,7 +78,7 @@ class Planner():
     v_cruise_kph = min(v_cruise_kph, V_CRUISE_MAX)
     v_cruise = v_cruise_kph * CV.KPH_TO_MS
 
-    apply_limit_speed, road_limit_speed, left_dist, first_started, max_speed_log = road_speed_limiter_get_max_speed(sm['carState'].VehicleSpeed, Params().get_bool('IsMetric'))
+    apply_limit_speed, road_limit_speed, left_dist, first_started, max_speed_log = road_speed_limiter_get_max_speed(sm['carState'].vehicleSpeedKPH, Params().get_bool('IsMetric'))
 
     if apply_limit_speed > 0:
       v_cruise = min(v_cruise, apply_limit_speed * CV.KPH_TO_MS)

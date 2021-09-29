@@ -209,6 +209,7 @@ std::unordered_map<std::string, uint32_t> keys = {
 
     {"AutoLaneChangeEnabled", PERSISTENT},
     {"PrebuiltEnabled", PERSISTENT},
+    {"NDAEnabled", PERSISTENT},
 
 };
 

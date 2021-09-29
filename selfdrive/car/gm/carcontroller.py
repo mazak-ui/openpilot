@@ -6,7 +6,7 @@ from selfdrive.car import apply_std_steer_torque_limits, create_gas_command
 from selfdrive.car.gm import gmcan
 from selfdrive.car.gm.values import DBC, CanBus, CarControllerParams
 from opendbc.can.packer import CANPacker
-from selfdrive.car.gm.ndamanager import  NDAManager
+
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 ACCEL_HYST_GAP = 0.008
@@ -39,7 +39,7 @@ class CarController():
     self.packer_obj = CANPacker(DBC[CP.carFingerprint]['radar'])
     self.packer_ch = CANPacker(DBC[CP.carFingerprint]['chassis'])
 
-    self.nda_manager = NDAManager()
+
 
   # def update(self, enabled, CS, frame, actuators,
   #            hud_v_cruise, hud_show_lanes, hud_show_car, hud_alert):
@@ -102,9 +102,7 @@ class CarController():
 
     #NDAManager
 
-    CC.ndaManager.roadLimitSpeedActive = road_speed_limiter_get_active()
-    CC.ndaManager.roadLimitSpeed = road_limit_speed
-    CC.ndaManager.roadLimitSpeedLeftDist = left_dist
+
 
     lka_active = lkas_enabled == 1
     lka_critical = lka_active and abs(actuators.steer) > 0.9

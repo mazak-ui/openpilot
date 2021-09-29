@@ -567,6 +567,23 @@ struct ControlsState @0x97ff69c53601abf1 {
     angleState @58 :LateralAngleState;
     debugState @59 :LateralDebugState;
   }
+  angleSteers @60 :Float32;
+  cluSpeedMs @61 :Float32;
+  applyAccel @62 :Float32;
+  aReqValue @63 :Float32;
+  aReqValueMin @64 :Float32;
+  aReqValueMax @65 :Float32;
+
+  steerRatio @66 :Float32;
+  steerRateCost @67 :Float32;
+  steerActuatorDelay @68 :Float32;
+  sccGasFactor @69 :Float32;
+  sccBrakeFactor @70 :Float32;
+  sccCurvatureFactor @71 :Float32;
+  longitudinalActuatorDelay @72 :Float32;
+
+  sccStockCamAct @73 :Float32;
+  sccStockCamStatus @74 :Float32;
 
   enum OpenpilotState @0xdbe58b96d2d1ac61 {
     disabled @0;
