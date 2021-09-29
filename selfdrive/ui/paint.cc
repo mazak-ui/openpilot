@@ -772,7 +772,7 @@ static void ui_draw_vision_scc_gap(UIState *s) { // TODO jc01rho : 체크 필요
   auto car_state = (*s->sm)["carState"].getCarState();
   auto scc_smoother = s->scene.car_control.getSccSmoother();
 
-  int gap = car_state.getCruiseGap();
+  //int gap = car_state.getCruiseGap();
   bool longControl = scc_smoother.getLongControl();
   int autoTrGap = scc_smoother.getAutoTrGap();
 
@@ -791,18 +791,18 @@ static void ui_draw_vision_scc_gap(UIState *s) { // TODO jc01rho : 체크 필요
   float textSize = 30.f;
 
   char str[64];
-  if(gap <= 0) {
-    snprintf(str, sizeof(str), "N/A");
-  }
-  else if(longControl && gap == autoTrGap) {
+  //if(gap <= 0) {
+  //  snprintf(str, sizeof(str), "N/A");
+  //}
+  /*else*/ if(longControl /*&& gap == autoTrGap*/) {
     snprintf(str, sizeof(str), "AUTO");
     textColor = nvgRGBA(120, 255, 120, 200);
   }
-  else {
-    snprintf(str, sizeof(str), "%d", (int)gap);
-    textColor = nvgRGBA(120, 255, 120, 200);
-    textSize = 38.f;
-  }
+  //else {
+  //  snprintf(str, sizeof(str), "%d", (int)gap);
+  // textColor = nvgRGBA(120, 255, 120, 200);
+  //  textSize = 38.f;
+  //}
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
 
