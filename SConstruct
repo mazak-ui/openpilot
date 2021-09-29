@@ -9,8 +9,11 @@ import numpy as np
 TICI = os.path.isfile('/TICI')
 Decider('MD5-timestamp')
 SetOption('num_jobs', 4)
-CacheDir('/data/build_cache')
+
+CacheDir(cache_dir)
 Clean(["."], cache_dir)
+CacheDir('/data/scons_cache')
+
 
 AddOption('--test',
           action='store_true',
@@ -242,7 +245,7 @@ if GetOption('compile_db'):
 # Setup cache dir
 #cache_dir = '/data/scons_cache' if TICI else '/tmp/scons_cache'
 #CacheDir(cache_dir)
-
+#Clean(["."], cache_dir)
 
 node_interval = 5
 node_count = 0
