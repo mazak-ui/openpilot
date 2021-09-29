@@ -301,6 +301,23 @@ struct CarControl {
 
   cruiseControl @4 :CruiseControl;
   hudControl @5 :HUDControl;
+  sccSmoother @8 :SccSmoother;
+
+  struct SccSmoother {
+    longControl @0:Bool;
+
+    applyMaxSpeed @1 :Float32;
+    cruiseMaxSpeed @2 :Float32;
+
+    logMessage @3 :Text;
+
+    roadLimitSpeedActive @4 :Int32;
+    roadLimitSpeed @5 :UInt32;
+    roadLimitSpeedLeftDist @6 :UInt32;
+
+    autoTrGap @7 :UInt32;
+  }
+
 
   struct Actuators {
     # range from 0.0 - 1.0
