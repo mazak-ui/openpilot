@@ -4,12 +4,10 @@ from common.realtime import DT_MDL
 from selfdrive.config import Conversions as CV
 from selfdrive.modeld.constants import T_IDXS
 
-# cruise button by neokii
 ButtonType = car.CarState.ButtonEvent.Type
 ButtonPrev = ButtonType.unknown
 ButtonCnt = 0
 LongPressed = False
-
 # kph
 V_CRUISE_MAX = 135
 V_CRUISE_MIN = 5
@@ -88,6 +86,7 @@ def update_v_cruise_regen(v_ego, v_cruise_kph, regen, enabled):
 
   return v_cruise_kph
 
+
 def initialize_v_cruise(v_ego, buttonEvents, v_cruise_last):
   for b in buttonEvents:
     # 250kph or above probably means we never had a set speed
@@ -117,9 +116,9 @@ def get_lag_adjusted_curvature(CP, v_ego, psis, curvatures, curvature_rates):
 
   max_curvature_rate = interp(v_ego, MAX_CURVATURE_RATE_SPEEDS, MAX_CURVATURE_RATES)
   safe_desired_curvature_rate = clip(desired_curvature_rate,
-                                     -max_curvature_rate,
-                                     max_curvature_rate)
+                                          -max_curvature_rate,
+                                          max_curvature_rate)
   safe_desired_curvature = clip(desired_curvature,
-                                current_curvature - max_curvature_rate/DT_MDL,
-                                current_curvature + max_curvature_rate/DT_MDL)
+                                     current_curvature - max_curvature_rate/DT_MDL,
+                                     current_curvature + max_curvature_rate/DT_MDL)
   return safe_desired_curvature, safe_desired_curvature_rate

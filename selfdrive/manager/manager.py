@@ -45,6 +45,8 @@ def manager_init():
     #("LQR_Selected", "1"),
 
     ("NDAEnabled", "0"),
+    ("UseClusterSpeed", "1"),
+    ("LongControlEnabled", "0"),
     ("SccSmootherSlowOnCurves", "0"),
     ("SccSmootherSyncGasPressed", "0"),
     # ("StockNaviDecelEnabled", "0"),

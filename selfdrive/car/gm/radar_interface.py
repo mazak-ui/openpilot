@@ -36,7 +36,7 @@ def create_radar_can_parser(car_fingerprint):
 
   checks = []
 
-  return CANParser(DBC[car_fingerprint]['radar'], signals, checks, CanBus.OBSTACLE)
+  return CANParser(DBC[car_fingerprint]['radar'], signals, checks, CanBus.OBSTACLE, enforce_checks=False)
 
 class RadarInterface(RadarInterfaceBase):
   def __init__(self, CP):

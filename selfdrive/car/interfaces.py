@@ -1,7 +1,7 @@
 import os
 import time
 from typing import Dict
-
+from common.params import Params
 from cereal import car
 from common.kalman.simple_kalman import KF1D
 from common.realtime import DT_CTRL

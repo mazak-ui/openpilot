@@ -7,6 +7,7 @@ from selfdrive.car.interfaces import CarStateBase
 from selfdrive.car.gm.values import DBC, CAR, AccState, CanBus, \
                                     CruiseButtons, STEER_THRESHOLD
 
+from common.params import Params
 
 class CarState(CarStateBase):
   def __init__(self, CP):
@@ -15,6 +16,20 @@ class CarState(CarStateBase):
     self.shifter_values = can_define.dv["ECMPRDNL"]["PRNDL"]
     self.adaptive_Cruise = False
     self.enable_lkas = True
+
+    # scc smoother
+    self.acc_mode = False
+    self.cruise_gap = 1
+    self.brake_pressed = False
+    self.gas_pressed = False
+    self.standstill = False
+    self.cruiseState_enabled = False
+    self.cruiseState_speed = 0
+
+    self.use_cluster_speed = Params().get_bool('UseClusterSpeed')
+    self.long_control_enabled = Params().get_bool('LongControlEnabled')
+
+
 
   def update(self, pt_cp):
     ret = car.CarState.new_message()
@@ -71,7 +86,7 @@ class CarState(CarStateBase):
 
     ret.brakePressed = ret.brake > 1e-5
     ret.regenPressed = False
-    if self.car_fingerprint == CAR.VOLT or self.car_fingerprint == CAR.BOLT:
+    if self.car_fingerprint == CAR.BOLT:
       ret.regenPressed = bool(pt_cp.vl["EBCMRegenPaddle"]['RegenPaddle'])
     brake_light_enable = False
     if self.car_fingerprint == CAR.BOLT:
@@ -81,6 +96,16 @@ class CarState(CarStateBase):
 
     ret.cruiseState.enabled = self.main_on or ret.adaptiveCruise
 
+    # scc smoother
+    # driver_override = cp.vl["TCS13"]["DriverOverride"]
+    # self.acc_mode = cp_scc.vl["SCC12"]['ACCMode'] != 0
+    # self.cruise_gap = cp_scc.vl["SCC11"]['TauGapSet'] if not self.no_radar else 1
+    self.gas_pressed = ret.gasPressed #or driver_override == 1
+    self.brake_pressed = ret.brakePressed #or driver_override == 2
+    self.standstill = ret.standstill or ret.cruiseState.standstill
+    self.cruiseState_enabled = ret.cruiseState.enabled
+    self.cruiseState_speed = ret.cruiseState.speed
+    ret.cruiseGap = self.cruise_gap
     return ret
 
   @staticmethod
@@ -118,7 +143,7 @@ class CarState(CarStateBase):
     ]
 
 
-    if CP.carFingerprint == CAR.VOLT or CP.carFingerprint == CAR.BOLT:
+    if CP.carFingerprint == CAR.BOLT:
       signals += [
         ("RegenPaddle", "EBCMRegenPaddle", 0),
       ]

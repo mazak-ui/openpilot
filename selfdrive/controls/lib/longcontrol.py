@@ -7,26 +7,23 @@ from selfdrive.modeld.constants import T_IDXS
 
 LongCtrlState = car.CarControl.Actuators.LongControlState
 
-ACCEL_MAX = 2.0
-ACCEL_MIN = -4.0
-ACCEL_SCALE = 4.0
 STOPPING_EGO_SPEED = 0.5
 STOPPING_TARGET_SPEED_OFFSET = 0.01
+STARTING_TARGET_SPEED = 0.5
+DECEL_THRESHOLD_TO_PID = 0.8
+
+DECEL_STOPPING_TARGET = 2.0  # apply at least this amount of brake to maintain the vehicle stationary
+
+RATE = 100.0
 
 # As per ISO 15622:2018 for all speeds
 ACCEL_MIN_ISO = -3.5 # m/s^2
 ACCEL_MAX_ISO = 2.0 # m/s^2
 
-DEFAULT_LONG_LAG = 0.15
 
-STARTING_TARGET_SPEED = 1.0
-BRAKE_THRESHOLD_TO_PID = 0.2
-REGEN_THRESHOLD = 0.02
-
-BRAKE_STOPPING_TARGET = 0.5  # apply at least this amount of brake to maintain the vehicle stationary
-
-RATE = 100.0
-
+# As per ISO 15622:2018 for all speeds
+ACCEL_MIN_ISO = -3.5 # m/s^2
+ACCEL_MAX_ISO = 2.0 # m/s^2
 
 
 def long_control_state_trans(CP, active, long_control_state, v_ego, v_target, v_pid,
@@ -69,16 +66,11 @@ class LongControl():
   def __init__(self, CP, compute_gb):
     self.long_control_state = LongCtrlState.off  # initialized to off
     self.pid = LongPIController((CP.longitudinalTuning.kpBP, CP.longitudinalTuning.kpV),
-                                (CP.longitudinalTuning.kiBP, CP.longitudinalTuning.kiV),
-                                (CP.longitudinalTuning.kfBP, CP.longitudinalTuning.kfV),
-                                rate=RATE,
-                                sat_limit=0.8,
-                                convert=compute_gb)
-    self.pid.pos_limit = ACCEL_MAX
-    self.pid.neg_limit = ACCEL_MIN
+                            (CP.longitudinalTuning.kiBP, CP.longitudinalTuning.kiV),
+                            rate=1/DT_CTRL,
+                            sat_limit=0.8, convert=compute_gb)
     self.v_pid = 0.0
     self.last_output_accel = 0.0
-    self.last_output_gb = 0.0
 
   def reset(self, v_pid):
     """Reset PID controller and change setpoint"""
@@ -107,10 +99,6 @@ class LongControl():
 
     # TODO: This check is not complete and needs to be enforced by MPC
     a_target = clip(a_target, ACCEL_MIN_ISO, ACCEL_MAX_ISO)
-    # Actuation limits
-    gas_max = interp(CS.vEgo, CP.gasMaxBP, CP.gasMaxV)
-    brake_max = interp(CS.vEgo, CP.brakeMaxBP, CP.brakeMaxV)
-
 
     self.pid.neg_limit = accel_limits[0]
     self.pid.pos_limit = accel_limits[1]

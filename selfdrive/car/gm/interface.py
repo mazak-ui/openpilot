@@ -160,7 +160,7 @@ class CarInterface(CarInterfaceBase):
 
 
     #Added by jc01rho inspired by JangPoo
-    if ret.gearShifter == GearShifter.drive and ret.vEgo > 2 and not ret.brakePressed and not self.CS.standstil :
+    if ret.gearShifter == GearShifter.drive and ret.vEgo > 2 and not ret.brakePressed  : # and not self.CS.standstil :
       if ret.cruiseState.available and not ret.seatbeltUnlatched and not ret.espDisabled and self.flag_pcmEnable_able :
 
         if self.flag_pcmEnable_initialSet == False :

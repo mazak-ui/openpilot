@@ -40,7 +40,7 @@
 #include "selfdrive/common/params.h"
 #include "selfdrive/common/util.h"
 #include "selfdrive/common/visionimg.h"
-#include "selfdrive/common/touch.h"
+
 
 #define UI_FEATURE_DASHCAM 1
 
@@ -184,7 +184,7 @@ typedef struct UIState {
 
   //
   bool show_debug_ui, custom_lead_mark;
-  TouchState touch;
+
   int lock_on_anim_index;
 
 } UIState;

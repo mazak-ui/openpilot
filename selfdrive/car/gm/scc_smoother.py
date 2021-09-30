@@ -9,12 +9,11 @@ from selfdrive.car.hyundai.values import Buttons
 from common.params import Params
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, V_CRUISE_MIN, V_CRUISE_DELTA_KM, V_CRUISE_DELTA_MI
 from selfdrive.controls.lib.lane_planner import TRAJECTORY_SIZE
-from selfdrive.controls.lib.lead_mpc import AUTO_TR_CRUISE_GAP
-from selfdrive.ntune import ntune_scc_get
+
 from selfdrive.road_speed_limiter import road_speed_limiter_get_max_speed, road_speed_limiter_get_active
 
 SYNC_MARGIN = 3.
-
+AUTO_TR_CRUISE_GAP = 1
 # do not modify
 MIN_SET_SPEED_KPH = V_CRUISE_MIN
 MAX_SET_SPEED_KPH = V_CRUISE_MAX
@@ -227,7 +226,7 @@ class SccSmoother:
 
       if self.btn != Buttons.NONE:
 
-        can_sends.append(SccSmoother.create_clu11(packer, self.alive_timer, CS.scc_bus, CS.clu11, self.btn))
+        # can_sends.append(SccSmoother.create_clu11(packer, self.alive_timer, CS.scc_bus, CS.clu11, self.btn))
 
         if self.alive_timer == 0:
           self.started_frame = frame
@@ -298,7 +297,7 @@ class SccSmoother:
         curv = curv[start:min(start+10, TRAJECTORY_SIZE)]
         a_y_max = 2.975 - v_ego * 0.0375  # ~1.85 @ 75mph, ~2.6 @ 25mph
         v_curvature = np.sqrt(a_y_max / np.clip(np.abs(curv), 1e-4, None))
-        model_speed = np.mean(v_curvature) * 0.85 * ntune_scc_get("sccCurvatureFactor")
+        model_speed = np.mean(v_curvature) * 0.85  # * ntune_scc_get("sccCurvatureFactor")
 
         if model_speed < v_ego:
           self.curve_speed_ms = float(max(model_speed, MIN_CURVE_SPEED))
@@ -340,13 +339,13 @@ class SccSmoother:
 
   def get_accel(self, CS, sm, accel):
 
-    # gas_factor = ntune_scc_get("sccGasFactor")
-    # brake_factor = ntune_scc_get("sccBrakeFactor")
+    gas_factor = 1
+    brake_factor = 1
 
-    #lead = self.get_lead(sm)
-    #if lead is not None:
-    #  if not lead.radar:
-    #    brake_factor *= 0.95
+    lead = self.get_lead(sm)
+    if lead is not None:
+     if not lead.radar:
+       brake_factor *= 0.95
 
     if accel > 0:
       accel *= gas_factor

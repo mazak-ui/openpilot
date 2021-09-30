@@ -369,6 +369,11 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QWidget(parent) {
                                             "완전 정상주행 2회 이후 활성화하세요. prebuilt 파일이 있는경우 새로 빌드하지 않습니다. 업데이트창이 뜰때 내용을 확인하세요.",
                                             "../assets/offroad/icon_checkmark.png"
                                             ));
+  toggles.append(new ParamControl("UseClusterSpeed",
+                                            "Use Cluster Speed",
+                                            "Use cluster speed instead of wheel speed.",
+                                            "../assets/offroad/icon_road.png",
+                                            this));
   toggles.append(new ParamControl("NDAEnabled",
                                             "NDA를 활성화 합니다.",
                                             "warnings: it is beta, be careful!! Openpilot will control the speed of your car",

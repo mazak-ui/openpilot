@@ -6,7 +6,10 @@ from selfdrive.car import apply_std_steer_torque_limits, create_gas_command
 from selfdrive.car.gm import gmcan
 from selfdrive.car.gm.values import DBC, CanBus, CarControllerParams
 from opendbc.can.packer import CANPacker
-
+from common.params import Params
+from selfdrive.controls.lib.longcontrol import LongCtrlState
+from selfdrive.road_speed_limiter import road_speed_limiter_get_active
+from selfdrive.car.gm.scc_smoother import SccSmoother
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 ACCEL_HYST_GAP = 0.008
@@ -38,6 +41,9 @@ class CarController():
     self.packer_pt = CANPacker(DBC[CP.carFingerprint]['pt'])
     self.packer_obj = CANPacker(DBC[CP.carFingerprint]['radar'])
     self.packer_ch = CANPacker(DBC[CP.carFingerprint]['chassis'])
+
+    self.longcontrol = CP.openpilotLongitudinalControl
+    self.scc_smoother = SccSmoother()
 
 
 
@@ -101,7 +107,7 @@ class CarController():
     # Conveniently, sending camera message periodically also works as a keepalive.
 
     #NDAManager
-    self.scc_smoother.update(enabled, can_sends, self.packer, CC, CS, frame, apply_accel, controls)
+    self.scc_smoother.update(enabled, can_sends, None, CC, CS, frame, None, controls)
 
 
     lka_active = lkas_enabled == 1
