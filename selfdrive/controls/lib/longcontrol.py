@@ -67,6 +67,7 @@ class LongControl():
     self.long_control_state = LongCtrlState.off  # initialized to off
     self.pid = LongPIController((CP.longitudinalTuning.kpBP, CP.longitudinalTuning.kpV),
                             (CP.longitudinalTuning.kiBP, CP.longitudinalTuning.kiV),
+                                (CP.longitudinalTuning.kfBP, CP.longitudinalTuning.kfV),
                             rate=1/DT_CTRL,
                             sat_limit=0.8, convert=compute_gb)
     self.v_pid = 0.0
