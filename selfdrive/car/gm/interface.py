@@ -157,7 +157,8 @@ class CarInterface(CarInterfaceBase):
     # elif self.CS.main_on:
     #   self.CS.adaptive_Cruise = False
     #   self.CS.enable_lkas = True
-    self.CS.adaptive_Cruise = True
+    if self.CP.enableGasInterceptor:
+      self.CS.adaptive_Cruise = True
     self.CS.enable_lkas = True
 
     #Added by jc01rho inspired by JangPoo
