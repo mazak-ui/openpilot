@@ -1,6 +1,8 @@
 import copy
 import random
 import numpy as np
+
+import selfdrive.controls.lib.drive_helpers
 from common.numpy_fast import clip, interp, mean
 from cereal import car
 from common.realtime import DT_CTRL
@@ -9,7 +11,7 @@ from selfdrive.car.hyundai.values import Buttons
 from common.params import Params
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, V_CRUISE_MIN, V_CRUISE_DELTA_KM, V_CRUISE_DELTA_MI
 from selfdrive.controls.lib.lane_planner import TRAJECTORY_SIZE
-
+from selfdrive.controls.lib.drive_helpers import update_v_cruise, update_v_cruise_regen, initialize_v_cruise
 from selfdrive.road_speed_limiter import road_speed_limiter_get_max_speed, road_speed_limiter_get_active
 
 SYNC_MARGIN = 3.
@@ -395,30 +397,8 @@ class SccSmoother:
 
   @staticmethod
   def update_v_cruise(v_cruise_kph, buttonEvents, enabled, metric):
+    selfdrive.controls.lib.drive_helpers.update_v_cruise(v_cruise_kph, buttonEvents, enabled, metric)
 
-    global ButtonCnt, LongPressed, ButtonPrev
-    if enabled:
-      if ButtonCnt:
-        ButtonCnt += 1
-      for b in buttonEvents:
-        if b.pressed and not ButtonCnt and (b.type == ButtonType.accelCruise or b.type == ButtonType.decelCruise):
-          ButtonCnt = 1
-          ButtonPrev = b.type
-        elif not b.pressed and ButtonCnt:
-          if not LongPressed and b.type == ButtonType.accelCruise:
-            v_cruise_kph += 1 if metric else 1 * CV.MPH_TO_KPH
-          elif not LongPressed and b.type == ButtonType.decelCruise:
-            v_cruise_kph -= 1 if metric else 1 * CV.MPH_TO_KPH
-          LongPressed = False
-          ButtonCnt = 0
-      if ButtonCnt > 70:
-        LongPressed = True
-        V_CRUISE_DELTA = V_CRUISE_DELTA_KM if metric else V_CRUISE_DELTA_MI
-        if ButtonPrev == ButtonType.accelCruise:
-          v_cruise_kph += V_CRUISE_DELTA - v_cruise_kph % V_CRUISE_DELTA
-        elif ButtonPrev == ButtonType.decelCruise:
-          v_cruise_kph -= V_CRUISE_DELTA - -v_cruise_kph % V_CRUISE_DELTA
-        ButtonCnt %= 70
-      v_cruise_kph = clip(v_cruise_kph, MIN_SET_SPEED_KPH, MAX_SET_SPEED_KPH)
-
-    return v_cruise_kph
+  @staticmethod
+  def update_v_cruise_regen(v_ego, v_cruise_kph, regen, enabled):
+    selfdrive.controls.lib.drive_helpers.update_v_cruise_regen(v_ego, v_cruise_kph, regen, enabled)

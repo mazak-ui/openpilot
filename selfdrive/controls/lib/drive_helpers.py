@@ -9,8 +9,8 @@ ButtonPrev = ButtonType.unknown
 ButtonCnt = 0
 LongPressed = False
 # kph
-V_CRUISE_MAX = 135
-V_CRUISE_MIN = 5
+V_CRUISE_MAX = 120
+V_CRUISE_MIN = 4
 V_CRUISE_DELTA = 5
 V_CRUISE_ENABLE_MIN = 40
 V_CRUISE_DELTA_MI = 5 * CV.MPH_TO_KPH

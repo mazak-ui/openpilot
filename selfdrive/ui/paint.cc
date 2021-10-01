@@ -836,10 +836,16 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
 static void ui_draw_vision_speed(UIState *s) {
   const float speed = std::max(0.0, (*s->sm)["carState"].getCarState().getVEgo() * (s->scene.is_metric ? 3.6 : 2.2369363));
+  const float speed2 = std::max(0.0, (*s->sm)["carState"].getCarState().getVehicleSpeed() / (s->scene.is_metric ? 1.0 : 1.609));
   const std::string speed_str = std::to_string((int)std::nearbyint(speed));
+  const std::string speed_str2 = std::to_string((int)std::nearbyint(speed2));
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   ui_draw_text(s, s->fb_w/2, 210, speed_str.c_str(), 96 * 2.5, COLOR_WHITE, "sans-bold");
   ui_draw_text(s, s->fb_w/2, 290, s->scene.is_metric ? "km/h" : "mph", 36 * 2.5, COLOR_WHITE_ALPHA(200), "sans-regular");
+
+  ui_draw_text(s, s->fb_w/3*2, 210, speed_str2.c_str(), 96 * 2.5, COLOR_WHITE, "sans-bold");
+  ui_draw_text(s, s->fb_w/3*2, 290, s->scene.is_metric ? "km/h" : "mph", 36 * 2.5, COLOR_WHITE_ALPHA(200), "sans-regular");
+
 }
 
 static void ui_draw_vision_event(UIState *s) {

@@ -106,7 +106,7 @@ class CarController():
     # If not sent again, LKA icon disappears in about 5 seconds.
     # Conveniently, sending camera message periodically also works as a keepalive.
 
-    #NDAManager
+
     self.scc_smoother.update(enabled, can_sends, None, CC, CS, frame, None, controls)
 
 

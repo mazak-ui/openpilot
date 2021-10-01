@@ -394,14 +394,14 @@ class Controls:
     self.CP.pcmCruise = self.CI.CP.pcmCruise
 
     # if stock cruise is completely disabled, then we can use our own set speed logic # TODO jc01rho: fix supressed..
-    # if CS.adaptiveCruise:
-    #   self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled, self.is_metric)
-    #   if CS.regenPressed:
-    #     self.v_cruise_kph = update_v_cruise_regen(CS.vEgo, self.v_cruise_kph, CS.regenPressed, self.enabled)
-    # elif not CS.adaptiveCruise and CS.cruiseState.enabled:
-    #   self.v_cruise_kph = 40
+    if CS.adaptiveCruise:
+      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled, self.is_metric)
+      if CS.regenPressed:
+        self.v_cruise_kph = update_v_cruise_regen(CS.vEgo, self.v_cruise_kph, CS.regenPressed, self.enabled)
+    elif not CS.adaptiveCruise and CS.cruiseState.enabled:
+      self.v_cruise_kph = 40
 
-    SccSmoother.update_cruise_buttons(self, CS, self.CP.openpilotLongitudinalControl)
+    # SccSmoother.update_cruise_buttons(self, CS, self.CP.openpilotLongitudinalControl) # TODO jc01rho: fix supressed..
 
     # decrease the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
