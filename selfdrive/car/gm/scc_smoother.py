@@ -11,8 +11,11 @@ from selfdrive.car.hyundai.values import Buttons
 from common.params import Params
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, V_CRUISE_MIN, V_CRUISE_DELTA_KM, V_CRUISE_DELTA_MI
 from selfdrive.controls.lib.lane_planner import TRAJECTORY_SIZE
-from selfdrive.controls.lib.drive_helpers import update_v_cruise, update_v_cruise_regen, initialize_v_cruise
+from selfdrive.controls.lib.drive_helpers import update_v_cruise as origin_update_v_cruise
+from selfdrive.controls.lib.drive_helpers import update_v_cruise_regen as origin_update_v_cruise_regen
 from selfdrive.road_speed_limiter import road_speed_limiter_get_max_speed, road_speed_limiter_get_active
+
+
 
 SYNC_MARGIN = 3.
 AUTO_TR_CRUISE_GAP = 1
@@ -397,8 +400,8 @@ class SccSmoother:
 
   @staticmethod
   def update_v_cruise(v_cruise_kph, buttonEvents, enabled, metric):
-    selfdrive.controls.lib.drive_helpers.update_v_cruise(v_cruise_kph, buttonEvents, enabled, metric)
+    origin_update_v_cruise(v_cruise_kph, buttonEvents, enabled, metric)
 
   @staticmethod
   def update_v_cruise_regen(v_ego, v_cruise_kph, regen, enabled):
-    selfdrive.controls.lib.drive_helpers.update_v_cruise_regen(v_ego, v_cruise_kph, regen, enabled)
+    origin_update_v_cruise_regen(v_ego, v_cruise_kph, regen, enabled)
