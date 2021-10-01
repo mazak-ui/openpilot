@@ -197,7 +197,7 @@ class SccSmoother:
     CC.sccSmoother.roadLimitSpeedLeftDist = left_dist
 
     # kph
-    controls.applyMaxSpeed = float(clip(CS.v_cruise_kph * CV.MS_TO_KPH, MIN_SET_SPEED_KPH,
+    controls.applyMaxSpeed = float(clip(controls.v_cruise_kph * CV.MS_TO_KPH, MIN_SET_SPEED_KPH,
                                                 self.max_speed_clu * self.speed_conv_to_ms * CV.MS_TO_KPH))
     CC.sccSmoother.longControl = self.longcontrol
     CC.sccSmoother.applyMaxSpeed = controls.applyMaxSpeed
