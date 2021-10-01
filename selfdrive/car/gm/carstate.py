@@ -46,6 +46,7 @@ class CarState(CarStateBase):
     ret.standstill = ret.vEgoRaw < 0.1
     self.vehicleSpeed = pt_cp.vl["ECMVehicleSpeed"]["VehicleSpeed"] * CV.MPH_TO_KPH
     ret.vehicleSpeed = self.vehicleSpeed
+    ret.vEgo = pt_cp.vl["ECMVehicleSpeed"]["VehicleSpeed"] * CV.MPH_TO_MS
 
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["ECMPRDNL"]["PRNDL"], None))
     ret.brake = pt_cp.vl["EBCMBrakePedalPosition"]["BrakePedalPosition"] / 0xd0
